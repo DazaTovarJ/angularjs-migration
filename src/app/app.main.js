@@ -2,7 +2,7 @@ angular
   .module("codecraft", [
     "ngResource",
     "infinite-scroll",
-    "angularSpinner",
+    "angular-loading-bar",
     "jcs-autoValidate",
     "angular-ladda",
     "mgcrea.ngStrap",
@@ -14,7 +14,8 @@ angular
     $httpProvider,
     $resourceProvider,
     laddaProvider,
-    $datepickerProvider
+    $datepickerProvider,
+    cfpLoadingBarProvider
   ) {
     laddaProvider.setOption({
       style: "expand-right"
@@ -23,4 +24,6 @@ angular
       dateFormat: "d/M/yyyy",
       autoclose: true
     });
+    cfpLoadingBarProvider.includeBar = false;
+    cfpLoadingBarProvider.parentSelector = ".spinner";
   });
