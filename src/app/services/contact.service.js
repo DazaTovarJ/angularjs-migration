@@ -1,22 +1,11 @@
 angular
   .module("codecraft")
-  .factory("Contact", function($resource) {
-    return $resource(
-      "http://localhost:3000/contacts/:id",
-      {id: "@id"},
-      {
-        update: {
-          method: "PUT"
-        }
-      }
-    );
-  })
-  .factory("ContactService", function(Contact, $rootScope, $q, toaster) {
-    var self = {
-      getPerson: function(email) {
+  .factory("ContactService", function (Contact, $rootScope, $q, toaster) {
+    const self = {
+      getPerson: function (email) {
         console.log(email);
-        for (var i = 0; i < self.persons.length; i++) {
-          var obj = self.persons[i];
+        for (const element of self.persons) {
+          const obj = element;
           if (obj.email == email) {
             return obj;
           }
@@ -30,32 +19,32 @@ angular
       search: null,
       sorting: "name",
       ordering: "ASC",
-      doSearch: function() {
+      doSearch: function () {
         self.hasMore = true;
         self.page = 1;
         self.persons = [];
         self.loadContacts();
       },
-      doOrder: function() {
+      doOrder: function () {
         self.hasMore = true;
         self.page = 1;
         self.persons = [];
         self.loadContacts();
       },
-      loadContacts: function() {
+      loadContacts: function () {
         if (self.hasMore && !self.isLoading) {
           self.isLoading = true;
 
-          var params = {
+          const params = {
             _page: self.page,
             _sort: self.sorting,
             _order: self.ordering,
-            q: self.search
+            q: self.search,
           };
 
-          Contact.query(params, function(data) {
+          Contact.query(params, function (data) {
             console.debug(data);
-            angular.forEach(data, function(person) {
+            angular.forEach(data, function (person) {
               self.persons.push(new Contact(person));
             });
 
@@ -66,39 +55,39 @@ angular
           });
         }
       },
-      loadMore: function() {
+      loadMore: function () {
         if (self.hasMore && !self.isLoading) {
           self.page += 1;
           self.loadContacts();
         }
       },
-      updateContact: function(person) {
-        var d = $q.defer();
+      updateContact: function (person) {
+        const d = $q.defer();
         self.isSaving = true;
-        person.$update().then(function() {
+        person.$update().then(function () {
           self.isSaving = false;
           toaster.pop("success", "Updated " + person.name);
           d.resolve();
         });
         return d.promise;
       },
-      removeContact: function(person) {
-        var d = $q.defer();
+      removeContact: function (person) {
+        const d = $q.defer();
         self.isDeleting = true;
-        name = person.name;
-        person.$remove().then(function() {
+        let name = person.name;
+        person.$remove().then(function () {
           self.isDeleting = false;
-          var index = self.persons.indexOf(person);
+          let index = self.persons.indexOf(person);
           self.persons.splice(index, 1);
           toaster.pop("success", "Deleted " + name);
           d.resolve();
         });
         return d.promise;
       },
-      createContact: function(person) {
-        var d = $q.defer();
+      createContact: function (person) {
+        const d = $q.defer();
         self.isSaving = true;
-        Contact.save(person).$promise.then(function() {
+        Contact.save(person).$promise.then(function () {
           self.isSaving = false;
           self.hasMore = true;
           self.page = 1;
@@ -108,7 +97,7 @@ angular
           d.resolve();
         });
         return d.promise;
-      }
+      },
     };
 
     self.loadContacts();
